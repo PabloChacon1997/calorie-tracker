@@ -1,26 +1,42 @@
 import { useState } from "react";
+
 import { categories } from "../data/categories";
+import type { Activity } from "../types";
 
 
 
 export default function Form() {
 
-  const [acitivty,] = useState({
+  const [acitivty, setAcitivty] = useState<Activity>({
     category: 1,
     name: '',
     calories: 0
   })
 
-  // const handleChange = (e) => {
-  //   setAcitivty({
-  //     ...acitivty,
-  //     [e.target.id]: e.target.value
-  //   })
-  // }
+  const handleChange = ( e: React.ChangeEvent<HTMLSelectElement, HTMLSelectElement> | React.ChangeEvent<HTMLInputElement, HTMLInputElement>) => {
+    const isNumberField = ['category', 'calories'].includes(e.target.id);
+
+    setAcitivty({
+      ...acitivty,
+      [e.target.id]: isNumberField ? +e.target.value: e.target.value
+    })
+  }
+
+  const isValidActivity = () => {
+    const { name, calories } = acitivty
+
+    return name.trim() !== '' && calories > 0;
+  }
+
+  const handleSubmit = ( e: React.SubmitEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    console.log('submit')
+  }
 
   return (
     <form
       className="space-y-5 bg-white shadow p-10 rounded-lg"
+      onSubmit={handleSubmit}
     >
       <div 
         className="grid grid-cols-1 gap-3"
@@ -30,7 +46,7 @@ export default function Form() {
           className="border border-slate-300 p-2 rounded-lg w-full bg-white"
           id="category"
           value={acitivty.category}
-          // onChange={handleChange}
+          onChange={handleChange}
         >
           {
             categories.map(category => (
@@ -52,7 +68,7 @@ export default function Form() {
           className="border border-slate-300 p-2 rounded-lg"
           placeholder="Ej. Comida, Jugo de Naranja"
           value={acitivty.name}
-          // onChange={handleChange}
+          onChange={handleChange}
         />
       </div>
       <div 
@@ -65,13 +81,14 @@ export default function Form() {
           className="border border-slate-300 p-2 rounded-lg"
           placeholder="Calorias: ej. 300 o 500"
           value={acitivty.calories}
-          // onChange={handleChange}
+          onChange={handleChange}
         />
       </div>
       <input 
         type="submit" 
-        className="bg-gray-800 hover:bg-gray-900 w-full p-2 font-bold uppercase text-white cursor-pointer"
-        value='Guardar'/>
+        className="bg-gray-800 hover:bg-gray-900 w-full p-2 font-bold uppercase text-white cursor-pointer disabled:opacity-10"
+        value={acitivty.category === 1 ? 'Guardar comida':'Guardar ejercicio'}
+        disabled={!isValidActivity()}/>
     </form>
   )
 }
