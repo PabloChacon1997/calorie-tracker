@@ -13,12 +13,15 @@ export const initialState: ActivityState = {
 }
 
 export const acitivityReducer = (
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    _state : ActivityState = initialState,
+    state : ActivityState = initialState,
     action: ActivityActions
   ) => {
   if (action.type === 'save-activity') {
-    console.log('desde save activity')
-    
+    return {
+      ...state,
+      activities: [...state.activities, action.payload.newActivity]
+    }
   }
+
+  return state;
 }

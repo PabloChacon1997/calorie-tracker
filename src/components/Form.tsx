@@ -1,13 +1,17 @@
-import { useState } from "react";
+import { useState, type Dispatch } from "react";
 
 import { categories } from "../data/categories";
 import type { Activity } from "../types";
+import type { ActivityActions } from "../reducers/activity-reducer";
 
+type FormProps = {
+  dispatch: Dispatch<ActivityActions>
+}
 
-
-export default function Form() {
+export default function Form({ dispatch }: FormProps) {
 
   const [acitivty, setAcitivty] = useState<Activity>({
+    id: crypto.randomUUID(),
     category: 1,
     name: '',
     calories: 0
@@ -30,7 +34,13 @@ export default function Form() {
 
   const handleSubmit = ( e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault()
-    console.log('submit')
+    dispatch({ type: 'save-activity' , payload: {newActivity: acitivty}})
+    setAcitivty({
+      id: crypto.randomUUID(),
+      category: 1,
+      name: '',
+      calories: 0
+    })
   }
 
   return (
