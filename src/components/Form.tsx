@@ -1,14 +1,15 @@
-import { useState, type Dispatch } from "react";
+import { useEffect, useState, type Dispatch } from "react";
 
 import { categories } from "../data/categories";
 import type { Activity } from "../types";
-import type { ActivityActions } from "../reducers/activity-reducer";
+import type { ActivityActions, ActivityState } from "../reducers/activity-reducer";
 
 type FormProps = {
   dispatch: Dispatch<ActivityActions>
+  state: ActivityState
 }
 
-export default function Form({ dispatch }: FormProps) {
+export default function Form({ dispatch, state }: FormProps) {
 
   const [acitivty, setAcitivty] = useState<Activity>({
     id: crypto.randomUUID(),
@@ -16,6 +17,15 @@ export default function Form({ dispatch }: FormProps) {
     name: '',
     calories: 0
   })
+
+  useEffect(() => {
+    if (state.activeId) {
+      const selectedActivity = state.activities.filter(stateActivity => stateActivity.id === state.activeId)[0];
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setAcitivty(selectedActivity)
+    }
+  }, [state.activeId])
+  
 
   const handleChange = ( e: React.ChangeEvent<HTMLSelectElement, HTMLSelectElement> | React.ChangeEvent<HTMLInputElement, HTMLInputElement>) => {
     const isNumberField = ['category', 'calories'].includes(e.target.id);
