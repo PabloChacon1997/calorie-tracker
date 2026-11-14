@@ -49,7 +49,7 @@ export const acitivityReducer = (
   if (action.type === 'delete-activeId') {
     return {
       ...state,
-      activities: state.activities.filter(activity => activity.id === action.payload.id)
+      activities: state.activities.filter(activity => activity.id !== action.payload.id)
     }
   }
   if (action.type === 'reestart-app') {
